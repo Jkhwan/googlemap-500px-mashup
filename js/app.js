@@ -2,22 +2,6 @@ $(function () {
 
 	function initialize() {
 
-		/*
-
-		var geocoder = new google.maps.Geocoder();
-		var address = "Vancouver, BC";
-		var latitude=0, longtitude=0;
-
-		geocoder.geocode( { 'address': address}, function(results, status) {
-		  if (status == google.maps.GeocoderStatus.OK)
-		  {
-		      // do something with the geocoded result
-
-		      latitude = results[0].geometry.location.nb;
-		      longtitude = results[0].geometry.location.ob;
-		      
-		  }
-		});*/
 		//Using getElementById bc of GoogleMaps documentation
 		var mapDiv = document.getElementById('map-canvas');
 
@@ -41,14 +25,21 @@ $(function () {
 	var urlLong = '-123.11392628';
 	var consumerKey = 'Ji9CYX99WEZ4A11GWcbQkwJ32MGDttQlsKBiMs35';
 	var imageSize = '4';
-	var radius = '1km';
+	var radius = '50km';
 	var rpp = '100';
 	var url = '';
 	
-	function Image(latitude, longitude, url) {
+	function Image(latitude, longitude, url, description) {
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.description = description;
 		this.url = url;
+	};
+
+	var clearMarkers = function() {
+		for (var i = 0, size = markers.length; i < size; i++) {
+			markers[i].setMap(null);
+		}
 	};
 
 	var plot500 = function() {
@@ -64,10 +55,14 @@ $(function () {
 				var imageCollection = [];
 
 				$( data.photos ).each(function (index, photo) {
-					var image = new Image(photo.latitude, photo.longitude, photo.image_url)
+					var image = new Image(photo.latitude, photo.longitude, photo.image_url, photo.description)
 					imageCollection.push(image);			
 				});
 				console.log(imageCollection);
+
+				if (markers != null) {
+					clearMarkers();
+				}
 
 				$(imageCollection).each(function(index, pin) {
 					var myLatlng = new google.maps.LatLng(pin.latitude, pin.longitude);
@@ -75,7 +70,7 @@ $(function () {
 
 				      position: myLatlng,
 				      map: map,
-				      //title: 'Hello World!'
+				      title: pin.description
 			  		});
 			  		markers.push(marker);
 				});
