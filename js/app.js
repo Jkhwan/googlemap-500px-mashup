@@ -14,6 +14,21 @@ $(function () {
 		map = new google.maps.Map(document.getElementById("map-canvas"),
 		    mapOptions);
 
+		// var infoWindow = new google.maps.InfoWindow({
+  //   		content: contentString
+  //   	});
+
+		// marker = new google.maps.Marker({
+
+		// 		      position: null,
+		// 		      map: null,
+		// 		      title: null
+		// 	  		});
+
+		// google.maps.event.addDomListener(marker, 'click', function() {
+		// 	infoWindow.open(map,marker);
+		// });
+
 		google.maps.event.addDomListener(mapDiv, 'mouseup', plot500);
 		plot500();
 	}
@@ -24,16 +39,17 @@ $(function () {
 	var urlLat = '49.261226';
 	var urlLong = '-123.11392628';
 	var consumerKey = 'Ji9CYX99WEZ4A11GWcbQkwJ32MGDttQlsKBiMs35';
-	var imageSize = '4';
+	var imageSize = '2';
 	var radius = '50km';
 	var rpp = '100';
 	var url = '';
 	
-	function Image(latitude, longitude, url, description) {
+	function Image(latitude, longitude, url, description, name) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.description = description;
 		this.url = url;
+		this.name = name;
 	};
 
 	var clearMarkers = function() {
@@ -55,7 +71,7 @@ $(function () {
 				var imageCollection = [];
 
 				$( data.photos ).each(function (index, photo) {
-					var image = new Image(photo.latitude, photo.longitude, photo.image_url, photo.description)
+					var image = new Image(photo.latitude, photo.longitude, photo.image_url, photo.description, photo.name);
 					imageCollection.push(image);			
 				});
 				console.log(imageCollection);
@@ -66,12 +82,33 @@ $(function () {
 
 				$(imageCollection).each(function(index, pin) {
 					var myLatlng = new google.maps.LatLng(pin.latitude, pin.longitude);
+
+					var contentString = '<div id="content">'+
+								      '<div id="siteNotice">'+
+								      '</div>'+
+								      '<h1 id="firstHeading" class="firstHeading">' + pin.name + '</h1>'+
+								      '<div id="bodyContent">'+
+								      '<img src=' + pin.url + '>'+
+								      '<p>' + pin.description + '</p>' +
+								      '</div>'+
+								      '</div>';
+
 					var marker = new google.maps.Marker({
 
 				      position: myLatlng,
 				      map: map,
-				      title: pin.description
+				      title: pin.description,
+				      clickable: true
 			  		});
+
+			  		marker.info = new google.maps.InfoWindow({
+    					content: contentString
+    				});
+
+					google.maps.event.addDomListener(marker, 'click', function() {
+						marker.info.open(map,marker);
+					});
+
 			  		markers.push(marker);
 				});
 
