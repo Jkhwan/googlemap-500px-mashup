@@ -14,22 +14,7 @@ $(function () {
 		map = new google.maps.Map(document.getElementById("map-canvas"),
 		    mapOptions);
 
-		// var infoWindow = new google.maps.InfoWindow({
-  //   		content: contentString
-  //   	});
-
-		// marker = new google.maps.Marker({
-
-		// 		      position: null,
-		// 		      map: null,
-		// 		      title: null
-		// 	  		});
-
-		// google.maps.event.addDomListener(marker, 'click', function() {
-		// 	infoWindow.open(map,marker);
-		// });
-
-		google.maps.event.addDomListener(mapDiv, 'mouseup', plot500);
+		google.maps.event.addDomListener(map, 'mouseup', plot500);
 		plot500();
 	}
 
@@ -76,7 +61,7 @@ $(function () {
 				});
 				console.log(imageCollection);
 
-				if (markers != null) {
+				if (markers) {
 					clearMarkers();
 				}
 
@@ -95,21 +80,21 @@ $(function () {
 
 					var marker = new google.maps.Marker({
 
-				      position: myLatlng,
-				      map: map,
-				      title: pin.description,
-				      clickable: true
-			  		});
+			      position: myLatlng,
+			      map: map,
+			      title: pin.description,
+			      clickable: true
+		  		});
 
-			  		marker.info = new google.maps.InfoWindow({
-    					content: contentString
-    				});
+		  		marker.info = new google.maps.InfoWindow({
+  					content: contentString
+  				});
 
 					google.maps.event.addDomListener(marker, 'click', function() {
 						marker.info.open(map,marker);
 					});
 
-			  		markers.push(marker);
+			  	markers.push(marker);
 				});
 
 			}
